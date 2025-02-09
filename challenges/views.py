@@ -58,18 +58,27 @@ challenges = [
 
 
 def index(request):
-    return HttpResponse(f"This works! {request}")
+    paths = ""
+
+    for challenge in challenges:
+        link_string = challenge["month"].capitalize()
+        route_path = reverse("month-challenge", args=[challenge["month"]])
+        paths += f"<li><a href={route_path}>{link_string}</a></li>"
+
+    return HttpResponse(f"<main><h1>Monthly Challenges</h1><ul>{paths}</ul></main>")
 
 
 def view_month_wise_challenge(request, month):
     challenge_text = None
+    response_data = ""
     for challenge in challenges:
         if challenge["month"] == month:
             challenge_text = challenge["title"]
+            response_data = f"<h1>{challenge_text}</h1>"
             break
     if challenge_text is None:
         return HttpResponseNotFound("This month is not supported!")
-    return HttpResponse(challenge_text)
+    return HttpResponse(response_data)
 
 
 def view_number_wise_challenge(request, number):
@@ -77,6 +86,6 @@ def view_number_wise_challenge(request, number):
         redirect_to = challenges[number - 1]["month"]
         redirect_path = reverse("month-challenge", args=[redirect_to])
         print(redirect_path)
-        return HttpResponseRedirect(f"/challenges/{redirect_to}")
+        return HttpResponseRedirect(redirect_path)
     except IndexError:
         return HttpResponseNotFound("This number is not supported!")
