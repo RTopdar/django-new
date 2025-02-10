@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponseRedirect
+from . import views
 
 urlpatterns = [
     path("", lambda request: HttpResponseRedirect("/challenges/")),
